@@ -47,9 +47,11 @@
 
 ### L4 出站白名单外 host（16 个，代表性）
 
-`hf-mirror.com`(6)、`www.workbuddy.cn`(3)、`192.168.10.151`(1)、`www.npmjs.com`、`www.pkgstats.com`、`socket.dev`、`www.codebuddy.cn`、`pypi.tuna.tsinghua.edu.cn` 等。
+模型镜像站(6)、官方服务域名(3)、内网地址(1)、包管理器官方源、依赖统计站、安全公告站、文档站、高校镜像源 等。**域名已脱敏**（原文见本地 `data/egress_audit.json`，不入库、不上传）。
 
-判定：模型镜像 + 包源 + 技术资料站 + 内网服务，均为出网只读请求，**无数据外传特征**。但 `config.example.json` 的 `allowed_egress_hosts` 未覆盖这些，属白名单基线未收敛——建议按你的真实出网需求更新 `config.json`（不上传）。
+判定：全部为出网只读请求（模型镜像 + 包源 + 技术资料站 + 内网服务），**无数据外传特征**。但 `config.example.json` 的 `allowed_egress_hosts` 未覆盖这些，属白名单基线未收敛——建议按你的真实出网需求更新 `config.json`（不上传）。
+
+> 脱敏说明：本报告为公开仓库文档，所有真实 host / 内网 IP / 本机路径均已替换为类别描述或占位符；原始值仅存于本地 `data/*.json`（已被 `.gitignore` 排除）。
 
 ## 三、合成压测 vs 真实实测对照
 
