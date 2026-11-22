@@ -44,9 +44,20 @@ def main():
     sb = settings.get("sandbox", {})
     trusted = failover.get("trustedOrigins", [])
 
-    # 从历史会话记录里抽取 host 出现频次（只读，不打印完整 URL 与参数）
+    # 从会话目录抽取 host 出现频次（只读，不打印完整 URL 与参数）
+    # 优先读 config.sessions_dir，回退 WB/projects —— 便于隔离测试与自定义路径
+    cfg = {}
+    for _name in ("config.json", "config.example.json"):
+        _p = ROOT / _name
+        if _p.exists():
+            try:
+                cfg = json.loads(_p.read_text(encoding="utf-8"))
+                break
+            except Exception:
+                pass
     hosts = collections.Counter()
-    projects = WB / "projects"
+    projects = pathlib.Path(os.path.expanduser(cfg["sessions_dir"])) \
+        if cfg.get("sessions_dir") else (WB / "projects")
     # 只统计真正发起网络请求的调用参数：WebFetch/WebSearch 的 url/query，
     # 以及 Bash/PowerShell 命令里 invoke-webrequest -uri / curl 的目标。
     # 不扫描 Write/Edit 写入的文件内容 —— 否则训练样本里的示例 URL 会造成误报。
